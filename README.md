@@ -59,6 +59,10 @@ The optional config options are `tempo`, the tempo in bpm at which to play the s
 
 Changes the tempo of the sequence during playback. Note that this method has no effect if called while the sequencer is stopped.
 
+### sequencer.isPlaying()
+
+Returns a boolean indicating whether or not the sequencer is playing.
+
 ### sequencer.stop()
 
 Stops playback of the sequence.
