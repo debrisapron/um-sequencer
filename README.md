@@ -69,7 +69,7 @@ Stops playback of the sequence.
 
 ## TODO
 
-- Change tempo during playback
 - Optionally run timer in a web worker
+- Special event type to easily automate tempo
 - Handle changing sequence during playback (same length)
 - Handle changing sequence during playback (different length)
