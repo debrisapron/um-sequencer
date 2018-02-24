@@ -1,6 +1,6 @@
 # um-sequencer
 
-A simple and generic JavaScript music sequencer with no dependencies.
+A simple and generic JavaScript music sequencer library with no dependencies.
 
 ## Installation
 
