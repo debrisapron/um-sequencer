@@ -74,11 +74,24 @@ function Sequencer(getCurrentTime, opts = {}) {
     _nextEventTime = getCurrentTime() + _interval + secsFromQuarterNotes(_deltas[0])
   }
 
+  //////////////////////////////////////////////////////////////////////////////
+
+  function changeTempo(tempo) {
+    // Tempo changes may take up to [lookahead] to take effect.
+    if (!isPlaying()) { return }
+    _tempo = tempo
+  }
+
+  function stop() {
+    if (isPlaying()) {
+      clearInterval(_timerId)
+      _timerId = null
+    }
+  }
+
   function isPlaying() {
     return !!_timerId
   }
-
-  //////////////////////////////////////////////////////////////////////////////
 
   function play(events, opts = {}) {
     if (isPlaying()) { stop() }
@@ -86,14 +99,7 @@ function Sequencer(getCurrentTime, opts = {}) {
     startClock()
   }
 
-  function stop() {
-    if (_timerId) {
-      clearInterval(_timerId)
-      _timerId = null
-    }
-  }
-
-  return { play, stop }
+  return { play, isPlaying, stop, changeTempo }
 }
 
 export default Sequencer

@@ -25,6 +25,7 @@
     "webpack": "^3.11.0"
   },
   "scripts": {
-    "test": "karma start"
+    "test": "karma start",
+    "example": "open http://localhost:8080 && http-server"
   }
 }

@@ -4,23 +4,41 @@
   <title>um-sequencer example</title>
 </head>
 <body>
+  <button id="play">▶</button>
+  <button id="stop">■</button>
+  <input type="range" id="set-tempo" value="120" min="40" max="240">
+  tempo: <span id="tempo">120</span>
+
   <script type="module">
     import Sequencer from './index.js'
 
     let audioContext = new window.AudioContext()
     let sequencer = Sequencer(() => audioContext.currentTime)
+    let tempo = 120
 
-    sequencer.play([
-      { time: 0, callback: Beep(440) },
-      { time: 1, callback: Beep(440) },
-      { time: 2, callback: Beep(440) },
-      { time: 3, callback: Beep(880) }
-    ], {
-      tempo: 140,
-      loopLength: 4
-    })
+    function play() {
+      sequencer.play([
+        { time: 0, callback: Beep(440) },
+        { time: 1, callback: Beep(440) },
+        { time: 2, callback: Beep(440) },
+        { time: 3, callback: Beep(880) }
+      ], {
+        tempo,
+        loopLength: 4
+      })
+    }
 
-    setTimeout(sequencer.stop, 5000)
+    function stop() {
+      sequencer.stop()
+    }
+
+    function changeTempo(e) {
+      tempo = e.target.value
+      document.getElementById('tempo').innerText = tempo
+      if (sequencer.isPlaying()) {
+        sequencer.changeTempo(tempo)
+      }
+    }
 
     function Beep(freq) {
       return (time) => {
@@ -31,6 +49,10 @@
         osc.stop(time + 0.1)
       }
     }
+
+    document.getElementById('play').addEventListener('click', play)
+    document.getElementById('stop').addEventListener('click', stop)
+    document.getElementById('set-tempo').addEventListener('input', changeTempo)
   </script>
 </body>
 </html>
