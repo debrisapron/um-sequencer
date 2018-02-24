@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>um-sequencer example</title>
+</head>
+<body>
+  <script type="module">
+    import Sequencer from './index.js'
+
+    let audioContext = new window.AudioContext()
+    let sequencer = Sequencer(() => audioContext.currentTime)
+
+    sequencer.play([
+      { time: 0, callback: Beep(440) },
+      { time: 1, callback: Beep(440) },
+      { time: 2, callback: Beep(440) },
+      { time: 3, callback: Beep(880) }
+    ], {
+      tempo: 140,
+      loopLength: 4
+    })
+
+    setTimeout(sequencer.stop, 5000)
+
+    function Beep(freq) {
+      return (time) => {
+        let osc = audioContext.createOscillator()
+        osc.frequency.value = freq
+        osc.connect(audioContext.destination)
+        osc.start(time)
+        osc.stop(time + 0.1)
+      }
+    }
+  </script>
+</body>
+</html>
