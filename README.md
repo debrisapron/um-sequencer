@@ -61,7 +61,6 @@ Stops playback of the sequence.
 
 ## TODO
 
-- Tests
 - Change tempo during playback
 - Optionally run timer in a web worker
 - Handle changing sequence during playback (same length)

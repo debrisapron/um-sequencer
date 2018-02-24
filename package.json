@@ -7,6 +7,12 @@
   "repository": "github:debrisapron/um-sequencer",
   "author": "DEBRIS APRON <debrisapron@gmail.com>",
   "license": "MIT",
+  "keywords": [
+    "sequencer",
+    "music",
+    "web audio api",
+    "midi"
+  ],
   "devDependencies": {
     "chai": "^4.1.2",
     "karma": "^2.0.0",
