@@ -9,7 +9,7 @@ describe('Sequencer', () => {
 
   before(() => {
     audioContext = window._testAudioContext ||
-      (window._testAudioContext = new window.AudioContext())    
+      (window._testAudioContext = new window.AudioContext())
   })
 
   it('can play a simple sequence', (done) => {
@@ -25,7 +25,7 @@ describe('Sequencer', () => {
     ]
     startTime = audioContext.currentTime + 0.025
     sequencer.play(events, { tempo: 240 })
-    setTimeout(finish, 800)
+    setTimeout(finish, 850)
 
     function finish() {
       expect(times.length).to.equal(4)
