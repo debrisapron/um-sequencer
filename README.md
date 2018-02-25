@@ -39,26 +39,26 @@ function Beep(freq) {
 
 ## API
 
-### Sequencer(getCurrentTime, { interval, lookahead })
+### Sequencer(getCurrentTime, [options])
 
 Creates a sequencer object with the given clock source & timing options.
 
 `getCurrentTime` is a function which should return the current time in seconds. The most typical source for this would be the Web Audio API `AudioContext` `currentTime` property, but it could be any high-resolution clock.
 
-The optional config options are:
+The config options object may include:
 - `interval`, the time between clock ticks in seconds. Defaults to 0.025.
 - `lookahead`, the window of time after a tick in which found events will be scheduled. Defaults to 0.1.
 - `useWorker`, whether or not to run the clock in a web worker. Defaults to true.
 
 If you do not understand these options, don't mess with them. For more information see [A Tale Of Two Clocks](https://www.html5rocks.com/en/tutorials/audio/scheduling/).
 
-### sequencer.play(events, { tempo, loopLength })
+### sequencer.play(events, [options])
 
 Begins playback of a sequence of events with the given options.
 
 `events` is an array of event objects each of which should have two attributes, `time`, the time in quarter-notes from the beginning of the sequence at which the event should fire, and `callback`, the function to be called at that time.
 
-The optional config options are:
+The config options object may include:
 - `tempo`, the tempo in beats per minute. Defaults to 120bpm.
 - `loopLength`, a length in quarter-notes at which to loop the sequence. If omitted, the sequence will not loop.
 
