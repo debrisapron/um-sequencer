@@ -1,14 +1,14 @@
-function Sequencer(getCurrentTime, opts = {}) {
+function Sequencer(getCurrentTime, options = {}) {
 
   // NOTE
   // All absolute times are in seconds.
-  // All musical times are in quarter-notes.
+  // All musical times are in whole notes.
 
   //// Setup ///////////////////////////////////////////////////////////////////
 
-  let _interval = opts.interval || 0.025 // Time between ticks.
-  let _lookahead = opts.lookahead || 0.1 // Time to look ahead for events to schedule.
-  let _useWorker = opts.useWorker == null ? true : opts.useWorker
+  let _interval = options.interval || 0.025 // Time between ticks.
+  let _lookahead = options.lookahead || 0.1 // Time to look ahead for events to schedule.
+  let _useWorker = options.useWorker == null ? true : options.useWorker
   let _timerId
   let _clockWorker
   let _isPlaying = false
@@ -25,13 +25,13 @@ function Sequencer(getCurrentTime, opts = {}) {
 
   //// Playback ////////////////////////////////////////////////////////////////
 
-  function init(events, opts) {
-    _tempo = opts.tempo || 120
+  function init(events, options) {
+    _tempo = options.tempo || 120
 
     // Add the loop event if present & sort the events by time.
     _events = events.slice()
-    if (opts.loopLength) {
-      _events.push({ time: opts.loopLength, loop: true })
+    if (options.loopLength) {
+      _events.push({ time: options.loopLength, loop: true })
     }
     _events.sort((a, b) => a.time - b.time)
 
@@ -44,7 +44,7 @@ function Sequencer(getCurrentTime, opts = {}) {
     _nextEventIndex = 0
 
     // Schedule the first event to play after a tick has passed.
-    _nextEventTime = getCurrentTime() + _interval + secsFromQuarterNotes(_deltas[0])
+    _nextEventTime = getCurrentTime() + _interval + secsFromWholeNotes(_deltas[0])
   }
 
   // While there are notes that will need to play during the next lookahead period,
@@ -75,11 +75,11 @@ function Sequencer(getCurrentTime, opts = {}) {
 
     // If we are at the loop point, move it to the first note.
     _nextEventIndex = loop ? 0 : _nextEventIndex + 1
-    _nextEventTime += secsFromQuarterNotes(_deltas[_nextEventIndex])
+    _nextEventTime += secsFromWholeNotes(_deltas[_nextEventIndex])
   }
 
-  function secsFromQuarterNotes(qns) {
-    return qns * (60 / _tempo)
+  function secsFromWholeNotes(whns) {
+    return whns * (240 / _tempo)
   }
 
   //// Clock ///////////////////////////////////////////////////////////////////
@@ -131,10 +131,10 @@ function Sequencer(getCurrentTime, opts = {}) {
 
   //// API /////////////////////////////////////////////////////////////////////
 
-  function play(events, opts = {}) {
+  function play(events, options = {}) {
     if (_isPlaying) { stop() }
     _isPlaying = true
-    init(events, opts)
+    init(events, options)
     startClock()
   }
 

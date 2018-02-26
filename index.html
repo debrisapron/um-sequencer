@@ -19,12 +19,12 @@
     function play() {
       sequencer.play([
         { time: 0, callback: Beep(440) },
-        { time: 1, callback: Beep(440) },
-        { time: 2, callback: Beep(440) },
-        { time: 3, callback: Beep(880) }
+        { time: 1/4, callback: Beep(440) },
+        { time: 1/2, callback: Beep(440) },
+        { time: 3/4, callback: Beep(880) }
       ], {
         tempo,
-        loopLength: 4
+        loopLength: 1
       })
     }
 

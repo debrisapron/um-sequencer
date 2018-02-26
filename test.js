@@ -19,9 +19,9 @@ describe('Sequencer', () => {
     let callback = (time) => times.push(time - startTime)
     let events = [
       { time: 0, callback },
-      { time: 3, callback },
-      { time: 1, callback },
-      { time: 2, callback }
+      { time: 3/4, callback },
+      { time: 1/4, callback },
+      { time: 1/2, callback }
     ]
     startTime = audioContext.currentTime + 0.025
     sequencer.play(events, { tempo: 240 })
@@ -41,10 +41,10 @@ describe('Sequencer', () => {
     let callback = (time) => times.push(time - startTime)
     let events = [
       { time: 0, callback },
-      { time: 1, callback }
+      { time: 1/4, callback }
     ]
     startTime = audioContext.currentTime + 0.025
-    sequencer.play(events, { tempo: 240, loopLength: 2 })
+    sequencer.play(events, { tempo: 240, loopLength: 1/2 })
     setTimeout(finish, 800)
 
     function finish() {
