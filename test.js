@@ -1,3 +1,5 @@
+// FIXME:
+// Karma is garbage, use node for testing with high precision timer
 import _ from 'lodash'
 import chai from 'chai'
 import Sequencer from './index.js'

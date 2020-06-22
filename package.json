@@ -1,8 +1,9 @@
 {
   "name": "um-sequencer",
   "description": "A simple and generic JavaScript music sequencer library with no dependencies.",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "main": "index.js",
+  "type": "module",
   "homepage": "https://github.com/debrisapron/um-sequencer",
   "repository": "github:debrisapron/um-sequencer",
   "author": "DEBRIS APRON <debrisapron@gmail.com>",
@@ -25,7 +26,7 @@
     "webpack": "^3.11.0"
   },
   "scripts": {
-    "test": "karma start",
+    "test": "echo 'Tests are not currently functional'",
     "example": "open http://localhost:8080 && http-server"
   }
 }
