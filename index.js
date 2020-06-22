@@ -158,4 +158,4 @@ function Sequencer(getCurrentTime, options = {}) {
   return { play, stop, changeTempo, isPlaying }
 }
 
-export default Sequencer
+module.exports = Sequencer

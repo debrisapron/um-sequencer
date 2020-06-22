@@ -1,9 +1,8 @@
 {
   "name": "um-sequencer",
   "description": "A simple and generic JavaScript music sequencer library with no dependencies.",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "main": "index.js",
-  "type": "module",
   "homepage": "https://github.com/debrisapron/um-sequencer",
   "repository": "github:debrisapron/um-sequencer",
   "author": "DEBRIS APRON <debrisapron@gmail.com>",
