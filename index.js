@@ -12,6 +12,7 @@ function Sequencer(getCurrentTime, options = {}) {
   let _clockWorker
   let _isPlaying = false
   let _tempo
+  let _onStop
   let _nextEventIndex
   let _nextEventTime
   let _events
@@ -26,6 +27,7 @@ function Sequencer(getCurrentTime, options = {}) {
 
   function init(events, options) {
     _tempo = options.tempo || 120
+    _onStop = options.onStop || (() => {})
 
     // Add the loop event if present & sort the events by time.
     _events = events.slice()
@@ -71,7 +73,7 @@ function Sequencer(getCurrentTime, options = {}) {
 
     // If we are not looping and this is the end of the sequence, stop.
     if (isLastEvent && !loop) {
-      stop()
+      stopInternal('finished')
       return
     }
 
@@ -130,6 +132,14 @@ function Sequencer(getCurrentTime, options = {}) {
     return URL.createObjectURL(blob)
   }
 
+  function stopInternal(reason) {
+    if (_isPlaying) {
+      _isPlaying = false
+      stopClock()
+    }
+    _onStop(reason)
+  }
+
   //// API /////////////////////////////////////////////////////////////////////
 
   function play(events, options = {}) {
@@ -142,10 +152,7 @@ function Sequencer(getCurrentTime, options = {}) {
   }
 
   function stop() {
-    if (_isPlaying) {
-      _isPlaying = false
-      stopClock()
-    }
+    stopInternal('stopped')
   }
 
   function changeTempo(tempo) {

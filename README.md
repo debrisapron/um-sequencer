@@ -46,6 +46,7 @@ Creates a sequencer object with the given clock source & timing options.
 `getCurrentTime` is a function which should return the current time in seconds. The most typical source for this would be the Web Audio API `AudioContext` `currentTime` property, but it could be any high-resolution clock.
 
 `options` is a config object which may include:
+
 - `interval`, the time between clock ticks in seconds. Defaults to 0.025.
 - `lookahead`, the window of time after a tick in which found events will be scheduled. Defaults to 0.1.
 - `useWorker`, whether or not to run the clock in a web worker. Defaults to true.
@@ -57,12 +58,15 @@ If you do not understand these options, don't mess with them. For more informati
 Begins playback of a sequence of events with the given options.
 
 `events` is an array of event objects each of which must include two attributes:
+
 - `time`, the **musical** time in [whole notes](https://en.wikipedia.org/wiki/Whole_note) at which the event should fire.
 - `callback`, the function to be called at the given time.
 
 `options` is a config object which may include:
+
 - `tempo`, the tempo in beats per minute. Defaults to 120bpm.
 - `loopLength`, a length in whole notes at which to loop the sequence. If omitted, the sequence will not loop.
+- `onStop`, a callback which will be called when the sequence stops playback. The callback will be passed a string, either 'stopped' if the `stop()` method was called or 'finished' if the end of the sequence was reached and no `loopLength` was specified.
 
 ### sequencer.changeTempo(tempo)
 

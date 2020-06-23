@@ -14,6 +14,7 @@ describe('Sequencer', () => {
   it('can play a simple sequence', (done) => {
     const sequencer = getSequencer()
     let startTime
+    let stopReason
     const times = []
     const callback = (time) => times.push(time - startTime)
     const events = [
@@ -23,13 +24,17 @@ describe('Sequencer', () => {
       { time: 1 / 2, callback }
     ]
     startTime = getHrTime() + 0.025
-    sequencer.play(events, { tempo: 240 })
+    sequencer.play(events, {
+      tempo: 240,
+      onStop: (reason) => (stopReason = reason)
+    })
 
     setTimeout(() => {
+      expect(stopReason).to.equal('finished')
       expect(times.length).to.equal(4)
       expect(arrApproxEqual(times, [0, 1 / 4, 1 / 2, 3 / 4])).to.be.true
       done()
-    }, 850)
+    }, 900)
   })
 
   it('can loop a sequence', (done) => {
