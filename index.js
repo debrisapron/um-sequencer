@@ -1,5 +1,4 @@
 function Sequencer(getCurrentTime, options = {}) {
-
   // NOTE
   // All absolute times are in seconds.
   // All musical times are in whole notes.
@@ -37,21 +36,22 @@ function Sequencer(getCurrentTime, options = {}) {
 
     // For each event, get the delta time since the previous event.
     _deltas = _events.map(({ time, callback }, i, arr) => {
-      return i === 0 ? time : (time - arr[i - 1].time)
+      return i === 0 ? time : time - arr[i - 1].time
     })
 
     // Point the sequencer to the first event.
     _nextEventIndex = 0
 
     // Schedule the first event to play after a tick has passed.
-    _nextEventTime = getCurrentTime() + _interval + secsFromWholeNotes(_deltas[0])
+    _nextEventTime =
+      getCurrentTime() + _interval + secsFromWholeNotes(_deltas[0])
   }
 
   // While there are notes that will need to play during the next lookahead period,
   // schedule them and advance the pointer.
   function onTick() {
     let horizon = getCurrentTime() + _lookahead
-    while (_isPlaying && (_nextEventTime < horizon)) {
+    while (_isPlaying && _nextEventTime < horizon) {
       dispatch()
       advance()
     }
@@ -59,7 +59,9 @@ function Sequencer(getCurrentTime, options = {}) {
 
   function dispatch() {
     let callback = _events[_nextEventIndex].callback
-    if (callback) { callback(_nextEventTime) }
+    if (callback) {
+      callback(_nextEventTime)
+    }
   }
 
   // Move the pointer to the next note.
@@ -122,17 +124,18 @@ function Sequencer(getCurrentTime, options = {}) {
   }
 
   function clockWorkerUrl() {
-    let blob = new Blob(
-      [`(${ClockWorker.toString()})()`],
-      { type: 'application/javascript' }
-    )
+    let blob = new Blob([`(${ClockWorker.toString()})()`], {
+      type: 'application/javascript'
+    })
     return URL.createObjectURL(blob)
   }
 
   //// API /////////////////////////////////////////////////////////////////////
 
   function play(events, options = {}) {
-    if (_isPlaying) { stop() }
+    if (_isPlaying) {
+      stop()
+    }
     _isPlaying = true
     init(events, options)
     startClock()
@@ -147,7 +150,9 @@ function Sequencer(getCurrentTime, options = {}) {
 
   function changeTempo(tempo) {
     // Tempo changes may take up to [lookahead] to take effect.
-    if (!_isPlaying) { return }
+    if (!_isPlaying) {
+      return
+    }
     _tempo = tempo
   }
 
