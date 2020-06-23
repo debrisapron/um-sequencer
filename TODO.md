@@ -1,5 +1,7 @@
 # TODO
 
+- Fix tests
+- Fix example
 - Special event type to easily automate tempo with appropriate curves.
 - Handle changing sequence during playback.
   - If the sequence stays the same length, playback should continue seamlessly from the same point.

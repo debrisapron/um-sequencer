@@ -14,15 +14,9 @@
     "midi"
   ],
   "devDependencies": {
-    "chai": "^4.1.2",
-    "karma": "^2.0.0",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-mocha": "^1.3.0",
-    "karma-mocha-reporter": "^2.2.5",
-    "karma-webpack": "^2.0.9",
-    "lodash": "^4.17.5",
-    "mocha": "^8.0.1",
-    "webpack": "^3.11.0"
+    "chai": "^4.2.0",
+    "lodash": "^4.17.15",
+    "mocha": "^8.0.1"
   },
   "scripts": {
     "test": "mocha test.js",
