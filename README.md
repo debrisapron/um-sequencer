@@ -65,6 +65,7 @@ Begins playback of a sequence of events with the given options.
 `options` is a config object which may include:
 
 - `tempo`, the tempo in beats per minute. Defaults to 120bpm.
+- `startTime`, the time (according to `getCurrentTime`) at which to begin playing the sequence. Defaults to immediately.
 - `loopLength`, a length in whole notes at which to loop the sequence. If omitted, the sequence will not loop.
 - `onStop`, a callback which will be called when the sequence stops playback. The callback will be passed a string, either 'stopped' if the `stop()` method was called or 'finished' if the end of the sequence was reached and no `loopLength` was specified.
 

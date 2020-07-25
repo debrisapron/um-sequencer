@@ -40,13 +40,6 @@ function Sequencer(getCurrentTime, options = {}) {
     _deltas = _events.map(({ time, callback }, i, arr) => {
       return i === 0 ? time : time - arr[i - 1].time
     })
-
-    // Point the sequencer to the first event.
-    _nextEventIndex = 0
-
-    // Schedule the first event to play after a tick has passed.
-    _nextEventTime =
-      getCurrentTime() + _interval + secsFromWholeNotes(_deltas[0])
   }
 
   // While there are notes that will need to play during the next lookahead period,
@@ -92,6 +85,9 @@ function Sequencer(getCurrentTime, options = {}) {
     if (_useWorker) {
       _clockWorker.postMessage({ action: 'start', interval: _interval })
     } else {
+      // Run first tick on next event loop
+      setTimeout(onTick)
+      // Run subsequent ticks every _interval seconds
       _timerId = setInterval(onTick, _interval * 1000)
     }
   }
@@ -113,6 +109,11 @@ function Sequencer(getCurrentTime, options = {}) {
       let action = e.data.action
 
       if (action === 'start') {
+        // Run first tick on next event loop
+        setTimeout(() => {
+          postMessage({ action: 'tick' })
+        })
+        // Run subsequent ticks every e.data.interval seconds
         _workerTimerId = setInterval(() => {
           postMessage({ action: 'tick' })
         }, e.data.interval * 1000)
@@ -148,6 +149,14 @@ function Sequencer(getCurrentTime, options = {}) {
     }
     _isPlaying = true
     init(events, options)
+
+    // Point the sequencer to the first event.
+    _nextEventIndex = 0
+
+    // Schedule the first event.
+    const { startTime = getCurrentTime() + _lookahead } = options
+    _nextEventTime = startTime + secsFromWholeNotes(_deltas[0])
+
     startClock()
   }
 
