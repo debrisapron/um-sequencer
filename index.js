@@ -1,15 +1,19 @@
-function Sequencer(getCurrentTime, options = {}) {
+const Sequencer = (getCurrentTime, options = {}) => {
   // NOTE
   // All absolute times are in seconds.
   // All musical times are in whole notes.
 
   //// Setup ///////////////////////////////////////////////////////////////////
 
-  let _interval = options.interval || 0.025 // Time between ticks.
-  let _lookahead = options.lookahead || 0.1 // Time to look ahead for events to schedule.
-  let _useWorker = options.useWorker == null ? true : options.useWorker
+  const _interval = options.interval || 0.025 // Time between ticks.
+  const _lookahead = options.lookahead || 0.1 // Time to look ahead for events to schedule.
+  const _useWorker = options.useWorker == null ? true : options.useWorker
+  const _clockWorker = _useWorker && new Worker(clockWorkerUrl())
+  if (_clockWorker) {
+    _clockWorker.onmessage = onTick
+  }
+
   let _timerId
-  let _clockWorker
   let _isPlaying = false
   let _tempo
   let _onStop
@@ -18,14 +22,9 @@ function Sequencer(getCurrentTime, options = {}) {
   let _events
   let _deltas
 
-  if (_useWorker) {
-    _clockWorker = new Worker(clockWorkerUrl())
-    _clockWorker.onmessage = onTick
-  }
-
   //// Playback ////////////////////////////////////////////////////////////////
 
-  function init(events, options) {
+  const init = (events, options) => {
     _tempo = options.tempo || 120
     _onStop = options.onStop || (() => {})
 
@@ -37,32 +36,32 @@ function Sequencer(getCurrentTime, options = {}) {
     _events.sort((a, b) => a.time - b.time)
 
     // For each event, get the delta time since the previous event.
-    _deltas = _events.map(({ time, callback }, i, arr) => {
-      return i === 0 ? time : time - arr[i - 1].time
-    })
+    _deltas = _events.map(
+      ({ time, callback }, i, arr) => (i === 0 ? time : time - arr[i - 1].time)
+    )
   }
 
   // While there are notes that will need to play during the next lookahead period,
   // schedule them and advance the pointer.
-  function onTick() {
-    let horizon = getCurrentTime() + _lookahead
+  const onTick = () => {
+    const horizon = getCurrentTime() + _lookahead
     while (_isPlaying && _nextEventTime < horizon) {
       dispatch()
       advance()
     }
   }
 
-  function dispatch() {
-    let callback = _events[_nextEventIndex].callback
+  const dispatch = () => {
+    const callback = _events[_nextEventIndex].callback
     if (callback) {
       callback(_nextEventTime)
     }
   }
 
   // Move the pointer to the next note.
-  function advance() {
-    let loop = _events[_nextEventIndex].loop
-    let isLastEvent = _nextEventIndex === _deltas.length - 1
+  const advance = () => {
+    const loop = _events[_nextEventIndex].loop
+    const isLastEvent = _nextEventIndex === _deltas.length - 1
 
     // If we are not looping and this is the end of the sequence, stop.
     if (isLastEvent && !loop) {
@@ -75,13 +74,11 @@ function Sequencer(getCurrentTime, options = {}) {
     _nextEventTime += secsFromWholeNotes(_deltas[_nextEventIndex])
   }
 
-  function secsFromWholeNotes(whns) {
-    return whns * (240 / _tempo)
-  }
+  const secsFromWholeNotes = (whns) => whns * (240 / _tempo)
 
   //// Clock ///////////////////////////////////////////////////////////////////
 
-  function startClock() {
+  const startClock = () => {
     if (_useWorker) {
       _clockWorker.postMessage({ action: 'start', interval: _interval })
     } else {
@@ -92,7 +89,7 @@ function Sequencer(getCurrentTime, options = {}) {
     }
   }
 
-  function stopClock() {
+  const stopClock = () => {
     if (_useWorker) {
       _clockWorker.postMessage({ action: 'stop' })
     } else {
@@ -101,12 +98,13 @@ function Sequencer(getCurrentTime, options = {}) {
     }
   }
 
-  function ClockWorker() {
+  const ClockWorker = () => {
     // NOTE This function runs in a separate context, so does not have access to
     // instance variables!
     let _workerTimerId
+
     onmessage = (e) => {
-      let action = e.data.action
+      const action = e.data.action
 
       if (action === 'start') {
         // Run first tick on next event loop
@@ -126,14 +124,14 @@ function Sequencer(getCurrentTime, options = {}) {
     }
   }
 
-  function clockWorkerUrl() {
-    let blob = new Blob([`(${ClockWorker.toString()})()`], {
+  const clockWorkerUrl = () => {
+    const blob = new Blob([`(${ClockWorker.toString()})()`], {
       type: 'application/javascript'
     })
     return URL.createObjectURL(blob)
   }
 
-  function stopInternal(reason) {
+  const stopInternal = (reason) => {
     if (_isPlaying) {
       _isPlaying = false
       stopClock()
@@ -143,7 +141,7 @@ function Sequencer(getCurrentTime, options = {}) {
 
   //// API /////////////////////////////////////////////////////////////////////
 
-  function play(events, options = {}) {
+  const play = (events, options = {}) => {
     if (_isPlaying) {
       stop()
     }
@@ -160,11 +158,9 @@ function Sequencer(getCurrentTime, options = {}) {
     startClock()
   }
 
-  function stop() {
-    stopInternal('stopped')
-  }
+  const stop = () => stopInternal('stopped')
 
-  function changeTempo(tempo) {
+  const changeTempo = (tempo) => {
     // Tempo changes may take up to [lookahead] to take effect.
     if (!_isPlaying) {
       return
@@ -172,9 +168,7 @@ function Sequencer(getCurrentTime, options = {}) {
     _tempo = tempo
   }
 
-  function isPlaying() {
-    return _isPlaying
-  }
+  const isPlaying = () => _isPlaying
 
   return { play, stop, changeTempo, isPlaying }
 }
